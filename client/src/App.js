@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import ReservationsList from './components/pages/home';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import { ExtractJwt } from 'passport-jwt';
 // import Routes from './Routes'
 
 function App() {
