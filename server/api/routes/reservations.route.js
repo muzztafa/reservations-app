@@ -16,4 +16,10 @@ router.route("/add").post(controller.addReservation);
  */
 router.route("/").get(controller.getReservations);
 
+/**
+ * @api {put} reservations/update
+ * @apiDescription Update a reservation
+ */
+router.route("/update").put(controller.updateReservation);
+
 module.exports = router;

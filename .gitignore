@@ -1,1 +1,4 @@
 node_modules
+/client/node_modules
+/server/node_modules
+reservations-7857e-firebase-adminsdk-6374g-7e12d36e00.json

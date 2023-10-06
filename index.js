@@ -4,7 +4,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const dotenv = require('dotenv');
 
-// const cors = require("cors");
+const cors = require("cors");
 // const mongoose = require("./mongoose");
 
 
@@ -36,7 +36,7 @@ const app = express();
 
 
 
-// app.use(cors());
+app.use(cors());
 
 app.set("view engine", "html");
 

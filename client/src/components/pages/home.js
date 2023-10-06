@@ -5,13 +5,15 @@ import axios from 'axios';
 // import ReactFlexyTable from "react-flexy-table"
 // import "react-flexy-table/dist/index.css"
 // import Card from "react-bootstrap/Card"
-import { Modal, Button, Form } from "react-bootstrap"
+import { Modal, Button, Form, Table, Tab } from "react-bootstrap"
 // import "bootstrap/dist/css/bootstrap.css";
 // import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 // import BootstrapTable from "react-bootstrap-table-next";
+import moment from 'moment';
 
 const ReservationsList = () => {
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IndCUTRsTzlkeEZlZE1uZ2VBSGl0IiwiZW1haWwiOiJhaG1lZG11c3RhZmE1ODMyQGdtYWlsLmNvbSIsIm5hbWUiOiJBaG1lZCBNdXN0YWZhIiwiaWF0IjoxNjkxOTAyMzY1fQ.PXglKdP4ZKIABgVigubPxFIrJYssNlaleh6P7ycnYzc"
+  const token = localStorage.getItem("token")
+  console.log("Token: "+token)
   const [reservationsList, setReservationsList] = useState([]);
   const [temp, Settemp] = useState(true); //using it to re render
   const [isOpen, SetIsOpen] = useState(false);
@@ -59,7 +61,7 @@ const ReservationsList = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let date = new Date();
+    let date = moment().format('MMMM Do YYYY, h:mm:ss a');
     formData["start_time"] = date;
 
     const config = {
@@ -95,12 +97,12 @@ const ReservationsList = () => {
           </div>
           <div className="table-container">
 
-            <table className="table">
+            <Table className="table">
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>People Count</th>
-                  <th>Waiting Time</th>
+                  <th>Created At</th>
                   <th>Status</th>
                   <th>Entered By</th>
                   <th></th>
@@ -132,7 +134,7 @@ const ReservationsList = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         </div>
       </div>

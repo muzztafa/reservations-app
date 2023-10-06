@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 exports.getReservations = async (req, res, next) => {
     try {
         dataList = []
-        const collectionRef = db.collection("reservations");
+        const collectionRef = db.collection("reservations").orderBy("start_time");
         const querySnapshot = await collectionRef.get();
 
         querySnapshot.forEach((doc) => {
@@ -55,7 +55,7 @@ exports.addReservation = async (req, res, next) => {
         const newReservation = {
             ...reservationDetails,
             status: "Entered",
-            entered_by: loggedUser.email
+            entered_by: loggedUser.email,
         }
         const reservationsCollection = db.collection('reservations');
         reservationsCollection.add(newReservation).then((docRef) => {
@@ -65,6 +65,59 @@ exports.addReservation = async (req, res, next) => {
             data: newReservation,
             message:
                 "Success",
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({
+
+                message: "Unauthorized",
+            });
+        }
+        
+        return res.status(500).json({
+
+            message: "Something went wrong",
+        });
+    }
+};
+
+
+exports.updateReservation = async (req, res, next) => {
+    try {
+        let reservationDetails = req.body;
+        let { id } = reservationDetails;
+        const token = req.headers.authorization.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({
+                message: "Unauthorized.",
+            });
+        }
+       
+        const loggedUser = jwt.verify(token, process.env.JWT_SECRET);
+        
+        if ( !id) {
+            return res.status(400).json({
+                message: "Incorrect fields sent, doc ID not present.",
+            });
+        }
+
+        // const newReservation = {
+        //     ...reservationDetails,
+        //     status: "Entered",
+        //     entered_by: loggedUser.email
+        // }
+        const reservationsCollection = db.collection('reservations');
+        const newReservation = reservationsCollection.doc(reservationDetails["id"]).set(reservationDetails).then((docRef) => {
+            console.log('Document updated with ID:', docRef.id);
+        })
+
+        return res.status(200).json({
+            data: newReservation,
+            message:
+                "Successfully updated",
         });
 
 
