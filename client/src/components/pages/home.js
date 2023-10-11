@@ -10,10 +10,14 @@ import { Modal, Button, Form, Table, Tab } from "react-bootstrap"
 // import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 // import BootstrapTable from "react-bootstrap-table-next";
 import moment from 'moment';
+import { ToastContainer, toast } from 'react-toastify';
+import Nav from 'react-bootstrap/Nav';
 
 const ReservationsList = () => {
   const token = localStorage.getItem("token")
-  console.log("Token: "+token)
+  // console.log("Token: "+token)
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"))
+
   const [reservationsList, setReservationsList] = useState([]);
   const [temp, Settemp] = useState(true); //using it to re render
   const [isOpen, SetIsOpen] = useState(false);
@@ -33,6 +37,9 @@ const ReservationsList = () => {
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        toast.error('Error: ' + error.response.data.message, {
+          position: toast.POSITION.TOP_RIGHT
+        });
       });
   }, [temp]);
 
@@ -40,17 +47,36 @@ const ReservationsList = () => {
     reservation.status = "Served";
     const config = {
       headers: { Authorization: `Bearer ${token}` }
-  };
+    };
     axios.put('http://localhost:5000/reservations/update', { ...reservation }, config)
       .then(response => {
+        toast.info('Reservation updated!', {
+          position: toast.POSITION.TOP_RIGHT
+        });
         console.log("updated");
         Settemp(!temp);
 
       })
       .catch(error => {
         console.error('Error updating reservation:', error);
+        toast.error('Error: ' + error.response.data.message, {
+          position: toast.POSITION.TOP_RIGHT
+        });
       });
 
+
+  };
+
+  const getWaiting =  () => {
+    console.log("ASD")
+    let newList = []
+    reservationsList.forEach(item => {
+      if (item["status"]=="Entered"){
+        newList.push(item);
+      }
+    });
+
+    setReservationsList(newList);
 
   };
 
@@ -66,14 +92,20 @@ const ReservationsList = () => {
 
     const config = {
       headers: { Authorization: `Bearer ${token}` }
-  };
-  
-    axios.post('http://localhost:5000/reservations/add',formData, config)
+    };
+
+    axios.post('http://localhost:5000/reservations/add', formData, config)
       .then(response => {
         Settemp(!temp);
+        toast.info('Added a reservation!', {
+          position: toast.POSITION.TOP_RIGHT
+        });
       })
       .catch(error => {
         console.error('Error posting reservation data:', error);
+        toast.error('Error: ' + error.response.data.message, {
+          position: toast.POSITION.TOP_RIGHT
+        });
       });
     console.log('Form data submitted:', formData);
     closeModal(); // Close the modal after submission
@@ -83,13 +115,29 @@ const ReservationsList = () => {
   return (
 
     <section class="py-1 bg-blueGray-50">
+
+      <h1>{loggedInUser["name"].split(" ")[1]}'s Restaurant</h1>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 mx-auto mt-24">
         <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded ">
           <div class="rounded-t mb-0 px-4 py-3 border-0">
             <div class="flex flex-wrap items-center">
               {/* <div class="relative w-full px-4 max-w-full flex-grow flex-1"> */}
-              <h3 class="relative font-semibold text-base text-blueGray-700">Today's List</h3>
+              {/* <h3 class="relative font-semibold text-base text-blueGray-700">Today's List</h3> */}
               {/* </div> */}
+              <Nav variant="tabs" defaultActiveKey="/home">
+                <Nav.Item>
+                  <Nav.Link href="/home">All</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="link-1" onClick={() => getWaiting()} >Waiting</Nav.Link>
+                </Nav.Item>
+                {/* <Nav.Item>
+                  
+                  {/* <Nav.Link eventKey="disabled" disabled>
+                    Disabled
+                  </Nav.Link> */}
+                {/* </Nav.Item> */} 
+              </Nav>
               <div class="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <button class="add-reservation-button" type="button" onClick={openModal}>Add</button>
               </div>
@@ -140,7 +188,7 @@ const ReservationsList = () => {
       </div>
 
       {/* <!-- Modal --> */}
-      <Modal show={isOpen}>
+      {/* <Modal show={isOpen}>
         <Modal.Header closeButton>
           <Modal.Title>Add a reservation</Modal.Title>
         </Modal.Header>
@@ -148,7 +196,7 @@ const ReservationsList = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>Close</Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
 
       <Modal show={isOpen}>
         <Modal.Header closeButton>
@@ -192,6 +240,8 @@ const ReservationsList = () => {
           </Form>
         </Modal.Body>
       </Modal>
+      <ToastContainer />
+
     </section>
   );
 }

@@ -151,7 +151,7 @@ function Login_Register() {
             <a href="!#">Forgot password?</a>
           </div>
 
-          <MDBBtn className="mb-4 w-100" onClick={login}>Login</MDBBtn>
+          <MDBBtn style={{ backgroundColor: 'green', color: 'white' }} className="mb-4 w-100" onClick={login}>Login</MDBBtn>
           {/* <p className="text-center">Not a member? <a href="#!">Register</a></p> */}
 
         </MDBTabsPane>
@@ -191,7 +191,7 @@ function Login_Register() {
             <MDBCheckbox name='flexCheck' id='flexCheckDefault' label='I have read and agree to the terms' />
           </div> */}
 
-          <MDBBtn className="mb-4 w-100"  onClick={register}>Register</MDBBtn>
+          <MDBBtn className="mb-4 w-100" style={{ backgroundColor: 'green', color: 'white' }}  onClick={register}>Register</MDBBtn>
 
         </MDBTabsPane>
 

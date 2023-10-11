@@ -105,7 +105,15 @@
   margin-left: 5px;
   
 }
+.md-outline input:focus {
+  border-color: red !important;
+  box-shadow: inset 0 0 0 1px red !important;
+  border-bottom: 1px solid red !important;
+}
 
+.md-outline label.active {
+  color: red !important;
+}
 
 .add-reservation-button {
   border: none;
